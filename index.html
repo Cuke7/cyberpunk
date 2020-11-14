@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <link href="styles.css" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <v-app>
+
+            <!-- NAVIGATION DRAWER -->
+            <v-navigation-drawer v-model="drawer" app>
+                <img width="100%"
+                    src="https://cdn.vox-cdn.com/thumbor/G7k3M4zzrugkxOsOq02K5XfhQ28=/1400x0/filters:no_upscale()/cdn.vox-cdn.com/uploads/chorus_asset/file/18936874/tntd.jpg"></img>
+                <v-list nav dense>
+                    <v-list-item-group v-model="group" active-class="red accent-4 text--accent-4">
+
+                        <template v-for="item in menuItems">
+                            <v-list-item v-on:click="navigateTo(item)">
+                                <v-list-item-icon>
+                                    <v-icon>mdi-folder</v-icon>
+                                </v-list-item-icon>
+                                <v-list-item-title>{{item.name}}</v-list-item-title>
+                            </v-list-item>
+                        </template>
+
+                    </v-list-item-group>
+                </v-list>
+            </v-navigation-drawer>
+
+            <!-- TOP APP BAR -->
+            <v-app-bar app color="red darken-4" dark>
+                <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
+                <v-toolbar-title>{{currentPage.name}}</v-toolbar-title>
+
+                <v-spacer></v-spacer>
+
+                <!-- LOG IN DIALOG-->
+                <v-dialog v-model="dialog" eager>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn v-show="!user.uid" icon v-bind="attrs" v-on="on">
+                            <v-icon>mdi-account-circle</v-icon>
+                        </v-btn>
+                        <img v-show="user.uid" v-bind:src="user.photoURL" v-bind="attrs" v-on="on"
+                            class="profilePicture"><img>
+                    </template>
+
+                    <v-card>
+                        <v-card-title color="deep-purple">
+                            My account
+                        </v-card-title>
+
+                        <v-card-text>
+                            <div v-show="!user.uid" id="firebaseui-auth-container"></div>
+                            <div v-show="user.uid">
+                                Logged in as: {{user.displayName}}
+                            </div>
+                        </v-card-text>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn v-show="user.uid" color="primary" text
+                                @click="dialog = false; firebase.auth().signOut();">
+                                Logout
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-app-bar>
+
+            <!-- MAIN CONTENT -->
+            <v-main>
+
+                <!-- Page objets divers -->
+                <template v-if="currentPage.key == 1">
+                    <embed src="data/materiel.pdf" type="application/pdf" width="100%" height="100%"/>
+                </template>
+
+            </v-main>
+        </v-app>
+    </div>
+
+    <!-- FIREBASE -->
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.0.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
+
+    <script>
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyAPvaEgqnLQNb-ysx3pXampFuew-HQP5eI",
+            authDomain: "cyberpunk-55629.firebaseapp.com",
+            databaseURL: "https://cyberpunk-55629.firebaseio.com",
+            projectId: "cyberpunk-55629",
+            storageBucket: "cyberpunk-55629.appspot.com",
+            messagingSenderId: "27554759790",
+            appId: "1:27554759790:web:cf463e7c88d057cb62527f"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
